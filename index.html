@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lush Chanzo Wood Industry</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: { extend: { colors: { wood: { dark: '#8B4513', light: '#D2B48C', bg: '#F5F5DC' } } } }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+        .page-view { display: none; }
+        .page-view.active { display: block; animation: fadeIn 0.4s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .cart-bump { animation: bump 0.3s ease-out; }
+        @keyframes bump { 0% { transform: scale(1); } 50% { transform: scale(1.3); } 100% { transform: scale(1); } }
+    </style>
+</head>
+<body class="bg-wood-bg text-gray-800">
+
+    <!-- NAVIGATION -->
+    <nav class="bg-wood-dark text-white p-4 sticky top-0 z-50 shadow-lg">
+        <div class="container mx-auto flex justify-between items-center">
+            <button onclick="navigate('home')" class="text-xl md:text-2xl font-bold tracking-wider">LUSH CHANZO</button>
+            <div class="flex space-x-4 items-center">
+                <button onclick="navigate('shop')" class="hover:text-wood-light font-semibold">Duka</button>
+                <button onclick="navigate('cart')" class="flex items-center space-x-2 bg-wood-light text-wood-dark px-3 py-2 rounded font-bold hover:bg-white transition">
+                    <span>🛒</span>
+                    <span id="cart-counter" class="bg-red-500 text-white rounded-full px-2 py-0.5 text-xs">0</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 1. HOME PAGE -->
+    <div id="view-home" class="page-view active">
+        <section class="relative bg-cover bg-center h-[500px] flex items-center" style="background-image: url('https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&q=80&w=1000');">
+            <div class="absolute inset-0 bg-black bg-opacity-60"></div>
+            <div class="container mx-auto relative z-10 text-center text-white px-4">
+                <h1 class="text-4xl md:text-5xl font-bold mb-4">Samani Bora za Mbao kutoka Mbeya</h1>
+                <p class="text-lg mb-8">Pendezesha nyumba yako kwa mbao imara.</p>
+                <button onclick="navigate('shop')" class="bg-wood-light text-wood-dark px-8 py-4 rounded-lg font-bold text-lg hover:bg-white transition shadow-lg">Nunua Sasa</button>
+            </div>
+        </section>
+        <section class="py-12 px-4 text-center">
+            <h2 class="text-2xl font-bold text-wood-dark mb-6">Kwa Nini Utuchague?</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 container mx-auto">
+                <div class="bg-white p-6 rounded shadow"><b>Mbao Imara</b><p>Mninga na Mkongo pekee.</p></div>
+                <div class="bg-white p-6 rounded shadow"><b>Mafundi Wazoefu</b><p>Kazi yenye umakini mkubwa.</p></div>
+                <div class="bg-white p-6 rounded shadow"><b>Bei Nafuu</b><p>Samani bora kwa bei nzuri.</p></div>
+            </div>
+        </section>
+    </div>
+
+    <!-- 2. SHOP PAGE -->
+    <div id="view-shop" class="page-view container mx-auto px-4 py-8">
+        <h2 class="text-3xl font-bold text-wood-dark mb-6 text-center">Bidhaa Zetu</h2>
+        <div id="product-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Products injected by JS -->
+        </div>
+    </div>
+
+    <!-- 3. PRODUCT DETAILS PAGE -->
+    <div id="view-product" class="page-view container mx-auto px-4 py-8">
+        <button onclick="navigate('shop')" class="mb-4 bg-gray-300 px-4 py-2 rounded">← Rudi Dukani</button>
+        <div id="product-detail-container" class="bg-white p-6 rounded shadow-lg flex flex-col md:flex-row gap-6">
+            <!-- Details injected by JS -->
+        </div>
+    </div>
+
+    <!-- 4. CART PAGE -->
+    <div id="view-cart" class="page-view container mx-auto px-4 py-8">
+        <h2 class="text-3xl font-bold text-wood-dark mb-6">Kikapu Chako</h2>
+        <div class="flex flex-col md:flex-row gap-6">
+            <div id="cart-items" class="md:w-2/3 bg-white p-4 rounded shadow"></div>
+            <div class="md:w-1/3 bg-white p-6 rounded shadow h-fit">
+                <h3 class="text-xl font-bold mb-4">Jumla Kuu</h3>
+                <p id="cart-total" class="text-2xl font-bold text-wood-dark mb-6">0 TZS</p>
+                <button onclick="navigate('checkout')" class="w-full bg-wood-dark text-white py-3 rounded font-bold">Endelea na Malipo</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. CHECKOUT PAGE -->
+    <div id="view-checkout" class="page-view container mx-auto px-4 py-8 max-w-lg">
+        <div class="bg-white p-6 rounded shadow-lg">
+            <h2 class="text-2xl font-bold text-wood-dark mb-6">Taarifa za Uwasilishaji</h2>
+            <form id="checkoutForm">
+                <input type="text" id="c_name" placeholder="Jina Kamili" class="w-full mb-4 p-3 border rounded" required>
+                <input type="text" id="c_location" placeholder="Eneo / Mtaa (Ndani ya Mbeya)" class="w-full mb-4 p-3 border rounded" required>
+                <select id="c_payment" class="w-full mb-6 p-3 border rounded">
+                    <option value="M-Pesa">M-Pesa</option>
+                    <option value="Tigo Pesa">Tigo Pesa</option>
+                    <option value="Cash on Delivery">Cash on Delivery</option>
+                </select>
+                <button type="submit" class="w-full bg-[#25D366] text-white py-4 rounded font-bold text-lg">
+                    Tuma Oda via WhatsApp
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- APP LOGIC -->
+    <script>
+        // Database
+        const products = [
+            { id: 1, name: 'Kitanda cha Mninga (6x6)', price: 450000, category: 'Vitanda', image: 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&q=80&w=400', desc: 'Kitanda imara cha mninga halisi.' },
+            { id: 2, name: 'Mlango wa Mkongo', price: 300000, category: 'Milango', image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&q=80&w=400', desc: 'Mlango mgumu wa nje. Hautobolewi na wadudu.' },
+            { id: 3, name: 'Meza ya Chakula (Watu 6)', price: 650000, category: 'Meza', image: 'https://images.unsplash.com/photo-1577140917170-285929fb55b7?auto=format&fit=crop&q=80&w=400', desc: 'Meza nzuri ya kulia chakula yenye viti 6.' },
+            { id: 4, name: 'Kitanda cha Watoto', price: 350000, category: 'Vitanda', image: 'https://images.unsplash.com/photo-1540574163026-643ea20d25b5?auto=format&fit=crop&q=80&w=400', desc: 'Kitanda cha kisasa cha ghorofa salama.' }
+        ];
+
+        let cart = JSON.parse(localStorage.getItem('lushCart')) || [];
+
+        // Navigation System
+        function navigate(viewId) {
+            document.querySelectorAll('.page-view').forEach(el => el.classList.remove('active'));
+            document.getElementById('view-' + viewId).classList.add('active');
+            window.scrollTo(0, 0);
+            if(viewId === 'shop') renderShop();
+            if(viewId === 'cart') renderCart();
+        }
+
+        // Render Products
+        function renderShop() {
+            const grid = document.getElementById('product-grid');
+            grid.innerHTML = products.map(p => `
+                <div class="bg-white rounded-lg shadow overflow-hidden">
+                    <img src="${p.image}" class="w-full h-48 object-cover">
+                    <div class="p-4">
+                        <h3 class="font-bold text-lg">${p.name}</h3>
+                        <p class="text-xl text-green-600 font-bold mb-3">${p.price.toLocaleString()} TZS</p>
+                        <div class="flex gap-2">
+                            <button onclick="viewProduct(${p.id})" class="flex-1 bg-gray-200 py-2 rounded">Tazama</button>
+                            <button onclick="addToCart(${p.id})" class="flex-1 bg-wood-dark text-white py-2 rounded">Kikapuni</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // View Single Product
+        function viewProduct(id) {
+            const p = products.find(x => x.id === id);
+            document.getElementById('product-detail-container').innerHTML = `
+                <img src="${p.image}" class="w-full md:w-1/2 h-[300px] object-cover rounded">
+                <div class="flex-1 flex flex-col justify-center">
+                    <h2 class="text-3xl font-bold mb-2">${p.name}</h2>
+                    <p class="text-2xl text-green-600 font-bold mb-4">${p.price.toLocaleString()} TZS</p>
+                    <p class="text-gray-600 mb-6">${p.desc}</p>
+                    <button onclick="addToCart(${p.id})" class="bg-wood-dark text-white py-3 px-6 rounded font-bold">Weka Kikapuni</button>
+                </div>
+            `;
+            navigate('product');
+        }
+
+        // Cart Logic
+        function addToCart(id) {
+            const item = cart.find(x => x.id === id);
+            if (item) item.qty++;
+            else cart.push({ ...products.find(x => x.id === id), qty: 1 });
+            saveCart();
+            alert("Bidhaa imewekwa kikapuni!");
+        }
+
+        function saveCart() {
+            localStorage.setItem('lushCart', JSON.stringify(cart));
+            document.getElementById('cart-counter').innerText = cart.reduce((sum, item) => sum + item.qty, 0);
+        }
+
+        function renderCart() {
+            const container = document.getElementById('cart-items');
+            if (cart.length === 0) {
+                container.innerHTML = "<p>Kikapu chako ni kitupu.</p>";
+                document.getElementById('cart-total').innerText = "0 TZS";
+                return;
+            }
+            
+            let total = 0;
+            container.innerHTML = cart.map((item, index) => {
+                total += item.price * item.qty;
+                return `
+                <div class="flex justify-between items-center border-b py-3">
+                    <div>
+                        <h4 class="font-bold">${item.name}</h4>
+                        <p class="text-sm">${item.price.toLocaleString()} TZS x ${item.qty}</p>
+                    </div>
+                    <button onclick="removeCartItem(${index})" class="text-red-500 font-bold px-3 py-1 bg-red-100 rounded">X</button>
+                </div>`;
+            }).join('');
+            document.getElementById('cart-total').innerText = total.toLocaleString() + " TZS";
+        }
+
+        function removeCartItem(index) {
+            cart.splice(index, 1);
+            saveCart();
+            renderCart();
+        }
+
+        // WhatsApp Checkout
+        document.getElementById('checkoutForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            if(cart.length === 0) return alert('Kikapu ni kitupu!');
+            
+            const name = document.getElementById('c_name').value;
+            const location = document.getElementById('c_location').value;
+            const payment = document.getElementById('c_payment').value;
+            
+            let msg = `*Habari Lush Chanzo!*\nNinaweka oda mpya:\n\n*MTEJA:* ${name}\n*ENEO:* ${location}\n*MALIPO:* ${payment}\n\n*BIDHAA:*\n`;
+            let total = 0;
+            cart.forEach(item => {
+                msg += `- ${item.qty}x ${item.name} (${(item.price * item.qty).toLocaleString()} TZS)\n`;
+                total += item.price * item.qty;
+            });
+            msg += `\n*JUMLA: ${total.toLocaleString()} TZS*`;
+
+            // Replace with the real business phone number here
+            const phone = "255700000000"; 
+            window.location.href = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+            
+            cart = [];
+            saveCart();
+        });
+
+        // Initialize App
+        saveCart();
+    </script>
+</body>
+</html>
