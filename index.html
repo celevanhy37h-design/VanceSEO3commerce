@@ -146,6 +146,24 @@
         // View Single Product
         function viewProduct(id) {
             const p = products.find(x => x.id === id);
+            window.dataLayer = window.dataLayer || [];
+
+window.dataLayer.push({
+    event: "view_item",
+    ecommerce: {
+        currency: "TZS",
+        value: p.price,
+        items: [
+            {
+                item_id: String(p.id),
+                item_name: p.name,
+                item_category: p.category,
+                price: p.price,
+                quantity: 1
+            }
+        ]
+    }
+});
             document.getElementById('product-detail-container').innerHTML = `
                 <img src="${p.image}" class="w-full md:w-1/2 h-[300px] object-cover rounded">
                 <div class="flex-1 flex flex-col justify-center">
