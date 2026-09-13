@@ -188,32 +188,44 @@ window.dataLayer.push({
         }
 
         // Cart Logic
-        function addToCart(id) {
-            const item = cart.find(x => x.id === id);
-            window.dataLayer = window.dataLayer || [];
+       function addToCart(id) {
+    const p = products.find(x => x.id === id);
 
-window.dataLayer.push({
-    event: "add_to_cart",
-    ecommerce: {
-        currency: "TZS",
-        value: p.price,
-        items: [
-            {
-                item_id: String(p.id),
-                item_name: p.name,
-                item_category: p.category,
-                price: p.price,
-                quantity: 1
-            }
-        ]
+    if (!p) return;
+
+    const item = cart.find(x => x.id === id);
+
+    if (item) {
+        item.qty++;
+    } else {
+        cart.push({
+            ...p,
+            qty: 1
+        });
     }
-});
-            if (item) item.qty++;
-            else cart.push({ ...products.find(x => x.id === id), qty: 1 });
-            saveCart();
-            alert("Bidhaa imewekwa kikapuni!");
-        }
 
+    window.dataLayer = window.dataLayer || [];
+
+    window.dataLayer.push({
+        event: "add_to_cart",
+        ecommerce: {
+            currency: "TZS",
+            value: p.price,
+            items: [
+                {
+                    item_id: String(p.id),
+                    item_name: p.name,
+                    item_category: p.category,
+                    price: p.price,
+                    quantity: 1
+                }
+            ]
+        }
+    });
+
+    saveCart();
+    alert("Bidhaa imewekwa kikapuni!");
+} 
         function saveCart() {
             localStorage.setItem('lushCart', JSON.stringify(cart));
             document.getElementById('cart-counter').innerText = cart.reduce((sum, item) => sum + item.qty, 0);
