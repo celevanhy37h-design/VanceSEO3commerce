@@ -741,6 +741,29 @@
 
             const container =
                 document.getElementById('cart-items');
+            window.dataLayer = window.dataLayer || [];
+
+const cartValue = cart.reduce(
+    (sum, item) => sum + (item.price * item.qty),
+    0
+);
+
+window.dataLayer.push({ ecommerce: null });
+
+window.dataLayer.push({
+    event: "view_cart",
+    ecommerce: {
+        currency: "TZS",
+        value: cartValue,
+        items: cart.map(item => ({
+            item_id: String(item.id),
+            item_name: item.name,
+            item_category: item.category,
+            price: item.price,
+            quantity: item.qty
+        }))
+    }
+});8
 
 
             if (cart.length === 0) {
@@ -994,6 +1017,7 @@
 
         }
 
+        
 
         /* =========================
            CHECKOUT / WHATSAPP
