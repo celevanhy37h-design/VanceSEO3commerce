@@ -1047,6 +1047,32 @@ window.dataLayer.push({
 
                 const payment =
                     document.getElementById('c_payment').value;
+                const transactionId = "LUSH-" + Date.now();
+
+const purchaseValue = cart.reduce(
+    (sum, item) => sum + (item.price * item.qty),
+    0
+);
+
+window.dataLayer = window.dataLayer || [];
+
+window.dataLayer.push({ ecommerce: null });
+
+window.dataLayer.push({
+    event: "purchase",
+    ecommerce: {
+        transaction_id: transactionId,
+        currency: "TZS",
+        value: purchaseValue,
+        items: cart.map(item => ({
+            item_id: String(item.id),
+            item_name: item.name,
+            item_category: item.category,
+            price: item.price,
+            quantity: item.qty
+        }))
+    }
+});
 
 
                 let msg =
